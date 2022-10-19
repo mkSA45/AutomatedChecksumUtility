@@ -2,7 +2,18 @@
 ***** ***** ***** ***** *****
 130620 start: modified version as my bundle file structure is different
 ***** ***** ***** ***** *****
-         */
+*/
+
+/**
+ * 
+ * Notes:
+ * 1. when using web browser, 'Bulk Download' on the bundle page seems to initiate download of all files with the specified file type(e.g. pdf, epub, mobi).
+ * Not helpful if a lot of the files are very large, then all files download at equally slow pace. Thus, this script was created to perform download by powershell.
+ * Requires to view the bundle page by web browser to generate the Powershell lines for downloading.
+ * 2. Possible improvement(to verify): 
+ * Regarding Powershell's Invoke-WebRequest progress bar in Powershell which slows download considerably compared to using web browser(wget is an alias for Invoke-WebRequest)
+ * answers by TinyTheBrontosaurus or LloydBanks(https://stackoverflow.com/questions/28682642/powershell-why-is-using-invoke-webrequest-much-slower-than-a-browser-download) 
+ */
 
 function gatherInfo() {
     const data = [];
