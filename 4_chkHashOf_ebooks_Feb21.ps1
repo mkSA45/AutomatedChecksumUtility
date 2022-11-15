@@ -52,6 +52,32 @@ Function AddChecksumResultToHashTable { # basically dont use myMethod() & Param 
 }
 
 $numHashesMatchedIndex = 0
+
+$postMay2022_NoHashOnBundlePage = $fileOfHashesTextLowered[0]
+if ($postMay2022_NoHashOnBundlePage -contains "NOHASH ON BUNDLE PAGE") {
+    Write-Output "`nThis text file does not contain the MD5 hashes. `nInstead of ensuring each downloaded file has corresponding hash in text file, `nreport on any files that have not been downloaded..."
+
+    foreach($lineText in $fileOfHashesTextLowered) {
+        # Nov 2022 skip 1st line else "NOHASH ON BUNDLE PAGE" is treated as file name search causing erroneus CLI warning "WARNING: nohash on bundle page has not been downloaded!"
+        if ($lineText -contains "NOHASH ON BUNDLE PAGE") {
+            continue
+        }
+
+        if ($lineText.Length -ne 0) {
+
+            $ebookFileName = $lineText.Substring($lineText.LastIndexOf("/") + 1)
+            $booleanFileDownloaded = Get-ChildItem -Path $folderOfFiles -recurse -filter $ebookFileName -File 
+            if ($booleanFileDownloaded -eq $null) {
+                Write-Warning "$($ebookFileName) has not been downloaded!"
+            } 
+            # not required unless want to see output in powershell CLI that file has been downloaded
+            # else {
+            #     Write-Output "$($ebookFileName) has been downloaded!"
+            # }
+        }
+    }
+}
+else {
 Get-ChildItem -Path $folderOfFiles -Recurse | 
 %{Get-FileHash $_.FullName -Algorithm MD5} | 
 %{
@@ -80,7 +106,7 @@ Get-ChildItem -Path $folderOfFiles -Recurse |
         Write-Warning "!!: Hash for $($_.Path) was not found. "
     }
 }
-
+}
 # ***** ***** ***** ***** *****
 
 
